@@ -24,6 +24,20 @@ def locateAndConfirmSend(driver):
     time.sleep(FAST_WAIT_TIME)
 
 
+def questionnaireNotForUser(driver):
+    ankietaNieDotyczy = driver.find_element(By.XPATH, '//*[contains(@value,"dotyczy")]')
+    print(ankietaNieDotyczy.text, ankietaNieDotyczy.accessible_name, ankietaNieDotyczy.location)
+    location = ankietaNieDotyczy.location_once_scrolled_into_view  # Scrolls to the element
+    ankietaNieDotyczy.click()
+
+    # Locates the confirm send button
+    locateAndConfirmSend(driver)
+
+
+# getting professor names
+with open('professorList', encoding='utf-8') as file:
+    professor_names = [line.rstrip() for line in file]
+
 driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
 
 # Our enauczanie log in page
@@ -71,7 +85,8 @@ try:
 
     try:
         toggle.click()
-    except:
+    except Exception as e:
+        print(e)
         menu_toggle = driver.find_element(By.ID, "menu-tabs-toggle")
         menu_toggle.click()
         toggle = driver.find_element(By.XPATH, '//a[@rel="' + 'menu-start' + '"]')
@@ -101,34 +116,35 @@ try:
         title = driver.find_element(By.XPATH, '//*[@id="i1"]/div[1]/div/h1/span')
         print(title.text)
 
-        if "MODUŁU 2020" in title.text:  # Indicates that this is an old questionnaire a.k.a not meant to be filled by us
-            ankietaNieDotyczy = driver.find_element(By.XPATH, '//*[contains(@value,"dotyczy")]')
-            print(ankietaNieDotyczy.text, ankietaNieDotyczy.accessible_name, ankietaNieDotyczy.location)
-            location = ankietaNieDotyczy.location_once_scrolled_into_view  # Scrolls to the element
-            ankietaNieDotyczy.click()
-
-            # Locates the confirm send button
-            locateAndConfirmSend(driver)
+        if "MODUŁU 2020" in title.text:  # Indicates that this is an old questionnaire a.k.a not meant to be filled
+            # by us
+            questionnaireNotForUser(driver)
         else:
-            # Ticking the checkboxes
-            for index in range(NUM_OF_CHECKBOXES):
-                # Locates the checkbox
-                checkboxA = driver.find_element(By.XPATH, '//*[contains(@id,"questions_panel:' + str(
-                    index) + '")]//*[contains(@id,"' + str(0) + ':pnl_qClosedSingle")]')
-                print(checkboxA.text)
-                locationCheckboxA = checkboxA.location_once_scrolled_into_view
-                checkboxA.click()
-                time.sleep(FAST_WAIT_TIME)
+            professor_name = driver.find_element(By.XPATH, '//*[contains(@id,"i1:j_id")]/table/tbody/tr[2]/td[2]')
+            print(professor_name.text, professor_name.accessible_name, professor_name.location)
+            matching_profs = [prof_name for prof_name in professor_names if prof_name in professor_name.accessible_name]
+            if len(matching_profs) == 0:
+                questionnaireNotForUser(driver)
+            else:
+                # Ticking the checkboxes
+                for index in range(NUM_OF_CHECKBOXES):
+                    # Locates the checkbox
+                    checkboxA = driver.find_element(By.XPATH, '//*[contains(@id,"questions_panel:' + str(
+                        index) + '")]//*[contains(@id,"' + str(0) + ':pnl_qClosedSingle")]')
+                    print(checkboxA.text)
+                    locationCheckboxA = checkboxA.location_once_scrolled_into_view
+                    checkboxA.click()
+                    time.sleep(FAST_WAIT_TIME)
 
-            # Sends our filled questionnaire
-            wyslijButton = driver.find_element(By.XPATH, '//*[contains(@value,"odpowiedź")]')
-            print(wyslijButton.text, wyslijButton.location)
-            locationWyslijButton = wyslijButton.location_once_scrolled_into_view
-            wyslijButton.click()
-            time.sleep(NORMAL_WAIT_TIME)
+                # Sends our filled questionnaire
+                wyslijButton = driver.find_element(By.XPATH, '//*[contains(@value,"odpowiedź")]')
+                print(wyslijButton.text, wyslijButton.location)
+                locationWyslijButton = wyslijButton.location_once_scrolled_into_view
+                wyslijButton.click()
+                time.sleep(NORMAL_WAIT_TIME)
 
-            # Locating and clicking the confirm button
-            locateAndConfirmSend(driver)
+                # Locating and clicking the confirm button
+                locateAndConfirmSend(driver)
 
     driver.quit()
 
