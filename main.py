@@ -1,4 +1,5 @@
 import time
+import re
 
 from selenium import webdriver
 from selenium.webdriver.edge.service import Service
@@ -34,9 +35,23 @@ def questionnaireNotForUser(driver):
     locateAndConfirmSend(driver)
 
 
+def replacer(details):
+    for detail in details:
+        role = detail[1]
+        detail[1] = re.sub("P", "Projekt", detail[1])
+        detail[1] = re.sub("W", "Wykład", detail[1])
+        detail[1] = re.sub("L", "Laboratorium", detail[1])
+    return details
+
+
 # getting professor names
 with open('professorList', encoding='utf-8') as file:
+    next(file)
     professor_names = [line.rstrip() for line in file]
+
+prof_details = [prof_detail.split(' - ') for prof_detail in professor_names]
+
+prof_details = replacer(prof_details)
 
 driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
 
@@ -121,9 +136,16 @@ try:
             questionnaireNotForUser(driver)
         else:
             professor_name = driver.find_element(By.XPATH, '//*[contains(@id,"i1:j_id")]/table/tbody/tr[2]/td[2]')
+            professor_role = driver.find_element(By.XPATH, '//*[contains(@id,"i1:j_id")]/table/tbody/tr[4]/td[2]/span')
             print(professor_name.text, professor_name.accessible_name, professor_name.location)
-            matching_profs = [prof_name for prof_name in professor_names if prof_name in professor_name.accessible_name]
-            if len(matching_profs) == 0:
+            print(professor_role.text, professor_role.accessible_name, professor_role.location)
+
+            # prof_det[0] contains professor_name, checks if one of the names in our list matches the one in website
+            # prof_det[1] contains professor_role, checks if one of the roles in our list matches the one in website
+            matching_prof = [prof_det for prof_det in prof_details if
+                             prof_det[0] in professor_name.text and professor_role.text in prof_det[1]]
+
+            if len(matching_prof) == 0:
                 questionnaireNotForUser(driver)
             else:
                 # Ticking the checkboxes
