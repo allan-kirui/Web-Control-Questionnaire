@@ -15,8 +15,8 @@ AJAX_WAIT_TIME = 20
 NUM_OF_CHECKBOXES = 9
 
 
+# Locating and clicking the confirm button on the website
 def locateAndConfirmSend(driver):
-    # Locating and clicking the confirm button
     wyslijConfirm = driver.find_element(By.XPATH, '//*[contains(@id,"i1:j_id")][contains(@value,"odpowiedź")]')
     print(wyslijConfirm.text, wyslijConfirm.accessible_name, wyslijConfirm.location)
     locationWyslijConfirm = wyslijConfirm.location_once_scrolled_into_view
@@ -25,6 +25,7 @@ def locateAndConfirmSend(driver):
     time.sleep(FAST_WAIT_TIME)
 
 
+# Situation where software is supposed to skip filling in a questionnaire
 def questionnaireNotForUser(driver):
     ankietaNieDotyczy = driver.find_element(By.XPATH, '//*[contains(@value,"dotyczy")]')
     print(ankietaNieDotyczy.text, ankietaNieDotyczy.accessible_name, ankietaNieDotyczy.location)
@@ -35,6 +36,7 @@ def questionnaireNotForUser(driver):
     locateAndConfirmSend(driver)
 
 
+# replaces the shortforms in professorList with appropriate values
 def replacer(details):
     for detail in details:
         role = detail[1]
@@ -50,7 +52,6 @@ with open('professorList', encoding='utf-8') as file:
     professor_names = [line.rstrip() for line in file]
 
 prof_details = [prof_detail.split(' - ') for prof_detail in professor_names]
-
 prof_details = replacer(prof_details)
 
 driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
@@ -100,7 +101,7 @@ try:
 
     try:
         toggle.click()
-    except Exception as e:
+    except Exception as e:  # in case of switched dimensions of screen therefore, toggle located in different location
         print(e)
         menu_toggle = driver.find_element(By.ID, "menu-tabs-toggle")
         menu_toggle.click()
@@ -131,7 +132,7 @@ try:
         title = driver.find_element(By.XPATH, '//*[@id="i1"]/div[1]/div/h1/span')
         print(title.text)
 
-        if "MODUŁU 2020" in title.text:  # Indicates that this is an old questionnaire a.k.a not meant to be filled
+        if "MODUŁU 2020" in title.text:  # Indicates that this is an old questionnaire a.k.a. not meant to be filled
             # by us
             questionnaireNotForUser(driver)
         else:
