@@ -49,10 +49,10 @@ def replacer(details):
 # getting professor names
 with open('professorList', encoding='utf-8') as file:
     next(file)
-    professor_names = [line.rstrip() for line in file]
+    professors = [line.rstrip() for line in file]
 
-prof_details = [prof_detail.split(' - ') for prof_detail in professor_names]
-prof_details = replacer(prof_details)
+professor_details = [professor_detail.split(' - ') for professor_detail in professors]
+professor_details = replacer(professor_details)
 
 driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
 
@@ -143,8 +143,8 @@ try:
 
             # prof_det[0] contains professor_name, checks if one of the names in our list matches the one in website
             # prof_det[1] contains professor_role, checks if one of the roles in our list matches the one in website
-            matching_prof = [prof_det for prof_det in prof_details if
-                             prof_det[0] in professor_name.text and professor_role.text in prof_det[1]]
+            matching_prof = [prof_detail for prof_detail in professor_details if
+                             prof_detail[0] in professor_name.text and professor_role.text in prof_detail[1]]
 
             if len(matching_prof) == 0:
                 questionnaireNotForUser(driver)
