@@ -143,10 +143,10 @@ try:
 
             # prof_det[0] contains professor_name, checks if one of the names in our list matches the one in website
             # prof_det[1] contains professor_role, checks if one of the roles in our list matches the one in website
-            matching_prof = [prof_detail for prof_detail in professor_details if
-                             prof_detail[0] in professor_name.text and professor_role.text in prof_detail[1]]
+            matching_professor = [prof_detail for prof_detail in professor_details if
+                                  prof_detail[0] in professor_name.text and professor_role.text in prof_detail[1]]
 
-            if len(matching_prof) == 0:
+            if len(matching_professor) == 0:
                 questionnaireNotForUser(driver)
             else:
                 # Ticking the checkboxes
