@@ -182,7 +182,7 @@ class Questionnaire:
                 title = self.driver.find_element(By.XPATH, '//*[@id="i1"]/div[1]/div/h1/span')
                 print(title.text)
 
-                if "MODUŁU 2020" in title.text:  # Indicates that this is an old questionnaire a.k.a. not meant to be
+                if "MODUŁU" in title.text:  # Indicates that this is an old questionnaire a.k.a. not meant to be
                     # filled by us
                     self.questionnaireNotForUser()
                 else:

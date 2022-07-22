@@ -4,14 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e71c99b7-d4b7-4b5a-b682-17366bebcfc0" name="Changes" comment="Subject line (try to keep under 50 characters)&#10;&#10;Multi-line description of commit,&#10;feel free to be detailed.&#10;&#10;[Ticket: X]" />
+    <list default="true" id="e71c99b7-d4b7-4b5a-b682-17366bebcfc0" name="Changes" comment="Subject line (try to keep under 50 characters)&#10;&#10;Multi-line description of commit,&#10;feel free to be detailed.&#10;&#10;[Ticket: X]">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="DarkyenusTimeTracker">
-    <option name="totalTimeSeconds" value="58770" />
+    <option name="totalTimeSeconds" value="59387" />
     <option name="gitIntegration" value="true" />
     <option name="naggedAbout" value="1" />
   </component>
@@ -144,7 +147,7 @@
       <workItem from="1658437735856" duration="8169000" />
       <workItem from="1658468992645" duration="2034000" />
       <workItem from="1658471134933" duration="3372000" />
-      <workItem from="1658477424437" duration="12578000" />
+      <workItem from="1658477424437" duration="13731000" />
     </task>
     <servers />
   </component>
@@ -162,7 +165,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="gui" />
                       </list>
                     </value>
                   </entry>
