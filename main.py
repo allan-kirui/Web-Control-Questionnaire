@@ -160,10 +160,10 @@ try:
                     time.sleep(FAST_WAIT_TIME)
 
                 # Sends our filled questionnaire
-                wyslijButton = driver.find_element(By.XPATH, '//*[contains(@value,"odpowiedź")]')
-                print(wyslijButton.text, wyslijButton.location)
-                locationWyslijButton = wyslijButton.location_once_scrolled_into_view
-                wyslijButton.click()
+                sendButton = driver.find_element(By.XPATH, '//*[contains(@value,"odpowiedź")]')
+                print(sendButton.text, sendButton.location)
+                locationWyslijButton = sendButton.location_once_scrolled_into_view
+                sendButton.click()
                 time.sleep(NORMAL_WAIT_TIME)
 
                 # Locating and clicking the confirm button
