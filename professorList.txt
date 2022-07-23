@@ -1,0 +1,5 @@
+Name of professor - Rodzaj zajęć (P = Projekt, W = Wykład, L = Laboratorium)
+Julian Szymański - P
+Michał Hoeft - W,P
+Wojciech Gumiński - L
+Krzysztof Gierłowski - W

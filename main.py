@@ -3,13 +3,15 @@ import re
 
 from selenium import webdriver
 from selenium.webdriver.edge.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from selenium.webdriver.common.by import By
-from passManagement import pwd, username  # used passlib to hash password
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-NORMAL_WAIT_TIME = 5  # Seconds to wait
+LONG_WAIT_TIME = 10 # Seconds to wait
+NORMAL_WAIT_TIME = 5
 FAST_WAIT_TIME = 2
 AJAX_WAIT_TIME = 20
 NUM_OF_CHECKBOXES = 9
@@ -19,6 +21,7 @@ class Questionnaire:
     username = None
     password = None
     filepath = None
+    browser = None
     driver = None
     professorDetails = None
     numOfQuestionnaireRows = None
@@ -26,28 +29,42 @@ class Questionnaire:
     professorRole = None
     matchingProfessor = None
 
-    def __init__(self, username, password, filepath):
-        self.userDetails(username, password, filepath)
+    def __init__(self, username, password, filepath,browser):
+        self.userDetails(username, password, filepath,browser)
         self.processFile()
         self.setupDriver()
         self.main()
 
-    def userDetails(self, username, password, filepath):
+    def userDetails(self, username, password, filepath,browser):
         self.username = username
         self.password = password
         self.filepath = filepath
+        self.browser = browser
 
     def processFile(self):
         # getting professor names
         with open(self.filepath, encoding='utf-8') as file:
             next(file)
             professors = [line.rstrip() for line in file]
-
+        print("Before replacement Before Split: ", end="")
+        print(professors)
+        print()
         self.professorDetails = [professor_detail.split(' - ') for professor_detail in professors]
+        print("Before replacement After Split: ", end="")
+        print(self.professorDetails)
+        print()
         self.professorDetails = self.replacer()
+        print("After replacement After Split: ", end="")
+        print(self.professorDetails)
+        print()
 
     def setupDriver(self):
-        self.driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
+        if self.browser == "Edge":
+            self.driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
+        elif self.browser == "Firefox":
+            self.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
+        elif self.browser == "Chrome":
+            self.driver= webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
         # Our enauczanie log in page
         self.driver.get(
@@ -64,13 +81,13 @@ class Questionnaire:
         id_box = self.driver.find_element(By.ID, 'username')
 
         # Send id information
-        id_box.send_keys(username)
+        id_box.send_keys(self.username)
 
         # Find password box
         pass_box = self.driver.find_element(By.ID, 'password')
 
         # Send password
-        pass_box.send_keys(pwd)
+        pass_box.send_keys(self.password)
 
         # Find login button
         login_button = self.driver.find_element(By.ID, 'submit_button')
@@ -151,7 +168,7 @@ class Questionnaire:
         # Locates the confirm send button
         self.locateAndConfirmSend()
 
-    # replaces the shortforms in professorList with appropriate values
+    # replaces the shortforms in professorList.txt with appropriate values
     def replacer(self):
         for detail in self.professorDetails:
             detail[1] = re.sub("P", "Projekt", detail[1])
@@ -169,6 +186,8 @@ class Questionnaire:
             self.locateQuestionnaires()
 
             self.calculateNumberOfQuestionnaires()
+            print("Calculated number of Questionnaires:")
+            time.sleep(LONG_WAIT_TIME)
 
             # Goes through each row, and performs appropriate actions for each row
             for row in range(self.numOfQuestionnaireRows):
@@ -211,11 +230,13 @@ class Questionnaire:
                         # Locating and clicking the confirm button
                         self.locateAndConfirmSend()
 
+                if self.numOfQuestionnaireRows - row == 1:
+                    self.calculateNumberOfQuestionnaires()
+                    if self.numOfQuestionnaireRows == 0:
+                        break
+
             self.driver.quit()
 
         except Exception as e:
             print(e)
             self.driver.quit()
-
-
-
